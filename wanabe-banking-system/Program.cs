@@ -1,14 +1,19 @@
 using Accounts;
-using Parties;
-using Transactions;
 using Microsoft.OpenApi;
+using Transactions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+//module accounts
 builder.Services.AddAccountsModule(builder.Configuration);
-builder.Services.AddControllers().AddApplicationPart(typeof(DependencyInjection).Assembly);
+//module transactions
+builder.Services.AddTransactionsModule(builder.Configuration);
+//config
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(Accounts.DependencyInjection).Assembly)
+    .AddApplicationPart(typeof(Transactions.DependencyInjection).Assembly);
 
 
 // Add services to the container.
