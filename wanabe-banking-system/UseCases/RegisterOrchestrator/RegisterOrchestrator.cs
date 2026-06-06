@@ -38,7 +38,7 @@ namespace wanabe_banking_system.UseCases.RegisterOrchestrator
             // create new party
             var newPartyResult =
                 await _createPartyService.CreateNewParty(new PartyRequestDto(request.FullName, request.Email));
-            if (newPartyResult == null) throw new UnauthorizedAccessException("Validate your data");
+            if (newPartyResult == null) throw new UnauthorizedAccessException("Validate your input");
             
             //create new (default) account
             await _accountService.ExecuteAsync(new CreateAccountRequestDto(
