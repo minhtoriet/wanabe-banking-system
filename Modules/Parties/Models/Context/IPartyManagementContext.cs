@@ -3,14 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Accounts.Models.Context
+namespace Parties.Models.Context
 {
-    public interface IAccountManagementContext
+    public interface IPartyManagementContext
     {
-        DbSet<Account> Accounts { get; set; }
-    
-
+        DbSet<Party> Parties { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-        int SaveChanges();
     }
 }

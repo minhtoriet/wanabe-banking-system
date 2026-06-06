@@ -1,18 +1,26 @@
-using Accounts;
+using Authentications;
+using Microsoft.OpenApi;
 using Parties;
 using Transactions;
-using Microsoft.OpenApi;
-using wanabe_banking_system;
+using wanabe_banking_system.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DBConnection");
 
-builder.Services.AddAccountsModule(builder.Configuration);
-builder.Services.AddTransactionsModule(builder.Configuration);
 
-builder.Services.AddControllers().AddApplicationPart(typeof(Accounts.DependencyInjection).Assembly)
-    .AddApplicationPart(typeof(Transactions.DependencyInjection).Assembly);
+builder.Services.AddTransactionsModule(builder.Configuration);
+builder.Services.AddAuthenticationsModule(builder.Configuration);
+builder.Services.AddPartiesModule(builder.Configuration);
+
+builder.Services.AddScoped<LoginOrchestrator>();
+
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(Accounts.DependencyInjection).Assembly)
+    .AddApplicationPart(typeof(Transactions.DependencyInjection).Assembly)
+    .AddApplicationPart(typeof(Authentications.DependencyInjection).Assembly)
+    .AddApplicationPart(typeof(Parties.DependencyInjection).Assembly);
+
 
 
 // Add services to the container.
