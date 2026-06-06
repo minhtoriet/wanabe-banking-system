@@ -3,6 +3,7 @@ using Microsoft.OpenApi;
 using Parties;
 using Transactions;
 using wanabe_banking_system.UseCases;
+using wanabe_banking_system.UseCases.RegisterOrchestrator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddTransactionsModule(builder.Configuration);
 builder.Services.AddAuthenticationsModule(builder.Configuration);
 builder.Services.AddPartiesModule(builder.Configuration);
 
+builder.Services.AddScoped<RegisterOrchestrator>();
 builder.Services.AddScoped<LoginOrchestrator>();
 
 builder.Services.AddControllers()
@@ -25,8 +27,6 @@ builder.Services.AddControllers()
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
