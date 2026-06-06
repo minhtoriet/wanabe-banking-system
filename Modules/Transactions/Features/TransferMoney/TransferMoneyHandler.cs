@@ -16,7 +16,6 @@ namespace Transactions.Features.TransferMoney
 
         public async Task<(bool IsValid, TransferResultDto? DuplicateResult, TransferSessionDto? Session)> PrepareTransferAsync(CreateTransferRequestDto request)
         {
-            // 1. Kiểm tra trùng lặp (Idempotency)
             var existingOrder = await _context.PaymentOrders.AsNoTracking()
                 .FirstOrDefaultAsync(p => p.IdempotencyKey == request.IdempotencyKey);
 
@@ -30,8 +29,6 @@ namespace Transactions.Features.TransferMoney
                 );
                 return (false, duplicateResult, null);
             }
-
-            // 2. Khởi tạo payment order (Trạng thái tạm tính là Processing)
             var order = new PaymentOrder
             {
                 PaymentId = Guid.NewGuid(),
@@ -42,8 +39,6 @@ namespace Transactions.Features.TransferMoney
                 Status = Status.Processing,
                 CreatedAt = DateTime.UtcNow
             };
-
-            // 3. Ghi Sổ chi tiết LedgerEntries local để lưu vết lịch sử giao dịch
             var debitEntry = new LedgerEntry
             {
                 EntryId = Guid.NewGuid(),
@@ -67,8 +62,6 @@ namespace Transactions.Features.TransferMoney
             _context.PaymentOrders.Add(order);
             _context.LedgerEntries.AddRange(debitEntry, creditEntry);
             await _context.SaveChangesAsync();
-
-            // 4. Đóng gói thông tin vào DTO công khai (Bây giờ cả hai đầu đều là Guid nên hết lỗi)
             var session = new TransferSessionDto(order.PaymentId, order.DebtorAccountId, order.CreditorAccountId, order.Amount);
 
             return (true, null, session);

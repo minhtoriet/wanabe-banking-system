@@ -6,6 +6,6 @@ namespace Transactions.Models.Context
     {
         DbSet<LedgerEntry> LedgerEntries { get; set; }
         DbSet<PaymentOrder> PaymentOrders { get; set; }
-        //Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
