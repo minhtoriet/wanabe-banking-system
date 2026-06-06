@@ -30,8 +30,17 @@ internal class CreateAccountService : ICreateAccountService
 
        
         _context.Accounts.Add(newAccount);
-        await _context.SaveChangesAsync();
-        
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Internal server error");
+                
+        }
+
         return new CreateAccountResponseDto(
             newAccount.AccountId,
             newAccount.AccountNumber,
