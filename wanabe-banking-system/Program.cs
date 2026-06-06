@@ -1,9 +1,7 @@
-using Accounts;
 using Authentications;
 using Microsoft.OpenApi;
 using Parties;
 using Transactions;
-using wanabe_banking_system;
 using wanabe_banking_system.UseCases;
 using wanabe_banking_system.UseCases.RegisterOrchestrator;
 
@@ -11,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DBConnection");
 
-builder.Services.AddAccountsModule(builder.Configuration);
+
 builder.Services.AddTransactionsModule(builder.Configuration);
 builder.Services.AddAuthenticationsModule(builder.Configuration);
 builder.Services.AddPartiesModule(builder.Configuration);
