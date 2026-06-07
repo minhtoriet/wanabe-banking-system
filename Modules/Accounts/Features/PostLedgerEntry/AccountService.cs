@@ -1,6 +1,7 @@
 using Accounts.Models;
 using Accounts.Models.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Accounts.Features.PostLedgerEntry;
 
@@ -14,50 +15,47 @@ internal class AccountService : IAccountService
     }
 
     // HÀM XỬ LÝ TRỪ TIỀN (DEBIT)
-    public async Task<AccountOpResult> DebitAsync(string accountNumber, double amount, Guid transactionId)
+    public async Task<AccountOpResult> DebitAsync(Guid accountId, double amount, Guid transactionId)
     {
-        // 1. Tìm tài khoản gửi
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == accountId);
 
         if (account == null) 
-            return new AccountOpResult(false, "Tài khoản gửi không tồn tại.");
+            return new AccountOpResult(false, "Account not exist.");
 
-        // 2. Kiểm tra trạng thái tài khoản
+      
         if (account.Status == Status.Suspended) 
-            return new AccountOpResult(false, "Tài khoản gửi đang bị khóa.");
+            return new AccountOpResult(false, "Suspeneded Account.");
 
-        // 3. Kiểm tra số dư tài khoản gửi
         if (account.Balance < amount) 
-            return new AccountOpResult(false, "Số dư tài khoản không đủ để thực hiện giao dịch.");
+            return new AccountOpResult(false, "Not sufficient account.");
 
-        // 4. Hợp lệ thì thực hiện trừ tiền trực tiếp trên thực thể
+        
         account.Balance -= amount;
         account.UpdatedAt = DateTime.UtcNow;
 
-        // 5. Lưu cập nhật số dư vào DB
+
         await _context.SaveChangesAsync();
 
         return new AccountOpResult(true, string.Empty);
     }
 
     // HÀM XỬ LÝ CỘNG TIỀN (CREDIT)
-    public async Task<AccountOpResult> CreditAsync(string accountNumber, double amount, Guid transactionId)
+    public async Task<AccountOpResult> CreditAsync(Guid accountId, double amount, Guid transactionId)
     {
-        // 1. Tìm tài khoản nhận
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+      
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == accountId);
 
         if (account == null) 
-            return new AccountOpResult(false, "Tài khoản nhận không tồn tại.");
+            return new AccountOpResult(false, "Account not exist.");
 
-        // 2. Kiểm tra trạng thái tài khoản nhận
         if (account.Status == Status.Suspended) 
-            return new AccountOpResult(false, "Tài khoản nhận đang bị khóa, không thể nhận tiền.");
+            return new AccountOpResult(false, "Suspeneded Account.");
 
-        // 3. Hợp lệ thì thực hiện cộng tiền trực tiếp
+       
         account.Balance += amount;
         account.UpdatedAt = DateTime.UtcNow;
 
-        // 4. Lưu cập nhật số dư vào DB
+   
         await _context.SaveChangesAsync();
 
         return new AccountOpResult(true, string.Empty);

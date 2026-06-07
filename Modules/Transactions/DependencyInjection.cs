@@ -1,26 +1,30 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Transactions.Features.GetAccountLedger;
+using Transactions.Features.GetPaymentOrders;
+using Transactions.Features.TransferMoney;
 using Transactions.Models.Context;
-using Transactions.Features.ExecuteTransfer;
 
-namespace Transactions;
-
-public static class DependencyInjection
+namespace Transactions
 {
-    public static IServiceCollection AddTransactionsModule(this IServiceCollection services, IConfiguration configuration)
+    public static class DependencyInjection
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
-        
-        services.AddDbContext<TransactionsManagementContext>(options =>
-            options.UseSqlServer(connectionString));
+        public static IServiceCollection AddTransactionsModule(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("DBConnection");
 
-        services.AddScoped<ITransactionsManagementContext>(provider =>
-            provider.GetRequiredService<TransactionsManagementContext>());
+            services.AddDbContext<TransactionManagementContext>(options =>
+                options.UseSqlServer(connectionString));
+            services.AddScoped<ITransactionManagementContext>(provider =>
+                provider.GetRequiredService<TransactionManagementContext>());
 
 
-        services.AddScoped<IExecuteTransferService, ExecuteTransferService>();
-
-        return services;
+            services.AddScoped<ITransferMoneyHandler, TransferMoneyHandler>();
+            services.AddScoped<IGetPaymentOrdersHandler, GetPaymentOrdersHandler>();
+            services.AddScoped<IGetAccountLedgerHandler, GetAccountLedgerHandler>();
+            return services;
+        }
     }
 }
+

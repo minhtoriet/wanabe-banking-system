@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace wanabe_banking_system.Controllers.Accounts;
 
 [ApiController]
+[Tags("Accounts")]
 public class CreateAccountController : ControllerBase
 {
     private readonly ICreateAccountService _service;
@@ -13,7 +14,7 @@ public class CreateAccountController : ControllerBase
         _service = service;
     }
 
-    [HttpPost("api/v1/accounts/create")]
+    [HttpPost("api/accounts/create")]
     public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequestDto dto)
     {
         var result = await _service.ExecuteAsync(dto);

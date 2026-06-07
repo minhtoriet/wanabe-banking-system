@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace wanabe_banking_system.Controllers.Accounts;
 
 [ApiController]
+[Tags("Accounts")]
 public class ChangeAccountStatusController : ControllerBase
 {
     private readonly IChangeAccountStatusService _service;
@@ -13,7 +14,7 @@ public class ChangeAccountStatusController : ControllerBase
         _service = service;
     }
 
-    [HttpPut("api/v1/accounts/{accountNumber}/change-status")]
+    [HttpPut("api/accounts/{accountNumber}/change-status")]
     public async Task<IActionResult> ChangeStatus([FromRoute] string accountNumber, [FromBody] ChangeAccountStatusRequestDto dto)
     {
         var result = await _service.ExecuteAsync(accountNumber, dto);

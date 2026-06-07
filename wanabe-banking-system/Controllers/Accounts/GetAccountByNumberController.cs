@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace wanabe_banking_system.Controllers.Accounts;
 
 [ApiController]
+[Tags("Accounts")]
 public class GetAccountByNumberController : ControllerBase
 {
     private readonly IGetAccountByNumberService _service;
@@ -13,7 +14,7 @@ public class GetAccountByNumberController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("api/v1/accounts/{accountNumber}")]
+    [HttpGet("api/accounts/{accountNumber}")]
     public async Task<IActionResult> GetByAccountNumber([FromRoute] string accountNumber)
     {
         var result = await _service.ExecuteAsync(accountNumber);

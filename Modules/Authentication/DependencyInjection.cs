@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Authentications.Features.GenerateToken;
+using Authentications.Models.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Authentications
 {
@@ -20,6 +19,10 @@ namespace Authentications
                 Authentications.Features.Register.RegisterService>();
             services.AddScoped<Authentications.Features.Authenticate.IAuthenticateService,
                 Authentications.Features.Authenticate.AuthenticateService>();
+            services.AddScoped<IAuthenticationManagementContext,
+                AuthenticationManagementContext>();
+            services.AddScoped<IGenerateToken,
+                GenerateToken>();
 
             return services;
         }
